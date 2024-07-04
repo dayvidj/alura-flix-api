@@ -2,7 +2,6 @@ package com.aluraflix.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,13 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.aluraflix.dto.DadosAtualizacaoDTO;
 import com.aluraflix.dto.DadosVideoDTO;
-import com.aluraflix.model.Video;
-import com.aluraflix.repositories.VideoRepository;
+import com.aluraflix.service.VideoService;
 
 import jakarta.validation.Valid;
 
@@ -27,50 +25,59 @@ import jakarta.validation.Valid;
 public class VideoController {
 
 	@Autowired
-	private VideoRepository repository;
+	private VideoService videoService;
 
 	@PostMapping
-	@Transactional
-	public ResponseEntity cadastrar(@RequestBody @Valid DadosVideoDTO dados) {
-		var video = new Video(dados);
-		repository.save(video);
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(dados);
+	public ResponseEntity cadastrar(@RequestBody @Valid DadosVideoDTO dados) {		
+		try{
+			videoService.salvarVideo(dados);
+			return ResponseEntity.status(HttpStatus.CREATED).body(dados);
+		}
+		catch(IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		}	
 	}
 
 	@GetMapping
 	public ResponseEntity listar() {
-		var videos = repository.findAll().stream().map(DadosAtualizacaoDTO::new).toList();
-		return ResponseEntity.ok(videos);
+		return ResponseEntity.ok(videoService.listarVideos());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity buscarPorId(@PathVariable Long id) {
-		var video = repository.findById(id);
-		if (video.isPresent()) {
-			return ResponseEntity.ok(new DadosVideoDTO(video.get()));
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Video não encontrado com o ID: " + id);
-		}
+		DadosVideoDTO video = videoService.buscarVideoPorId(id);
+		if (video != null) {
+			return ResponseEntity.ok(video);
+		} 
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Video não encontrado com o ID: " + id);
+	}
+	
+//	@GetMapping("/")
+//	public ResponseEntity buscarPorTitulo(@RequestParam String search) {
+//		var video = new DadosAtualizacaoDTO(videoService.buscarVideoPorTitulo(search));
+//		return ResponseEntity.ok(video);
+//	}
+	
+	@GetMapping("/search")
+	public ResponseEntity buscarPorTituloCategoria(@RequestParam String nome) {
+		var videos = videoService.buscarVideosPorTituloCategoria(nome).stream().map(DadosAtualizacaoDTO::new).toList();
+		return ResponseEntity.ok(videos);
 	}
 
 	@PutMapping
 	@Transactional
 	public ResponseEntity atualizar(@RequestBody @Valid DadosAtualizacaoDTO dados) {
-		var video = repository.getReferenceById(dados.id());
-		video.atualizarDados(dados);
-		return ResponseEntity.ok(new DadosVideoDTO(video));
+		var videoAtualizado = videoService.atualizarVideo(dados);
+		return ResponseEntity.ok(videoAtualizado);
 	}
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<String> deletar(@PathVariable Long id) {
-	    if (repository.existsById(id)) {
-	        repository.deleteById(id);
-	        return ResponseEntity.ok("Vídeo deletado com sucesso.");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vídeo não encontrado.");
-	    }
+	public ResponseEntity deletar(@PathVariable Long id) {
+		if(videoService.deletarVideo(id)) {
+			return ResponseEntity.ok("Vídeo deletado com sucesso.");			
+		}
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vídeo não encontrado.");
 	}
 
 }
