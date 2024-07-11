@@ -29,13 +29,8 @@ public class VideoController {
 
 	@PostMapping
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosVideoDTO dados) {		
-		try{
-			videoService.salvarVideo(dados);
-			return ResponseEntity.status(HttpStatus.CREATED).body(dados);
-		}
-		catch(IllegalArgumentException e) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-		}	
+		videoService.salvarVideo(dados);	
+		return ResponseEntity.status(HttpStatus.CREATED).body(dados);
 	}
 
 	@GetMapping

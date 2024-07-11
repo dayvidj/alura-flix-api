@@ -21,6 +21,11 @@ public class TratadorDeErros {
 	public ResponseEntity tratarErro400() {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Parâmetro inválido");
 	}
+
+	@ExceptionHandler(ValidacaoException.class)
+	public ResponseEntity tratarErroRegraDeNegocio(ValidacaoException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity tratarErro400(MethodArgumentNotValidException ex) {

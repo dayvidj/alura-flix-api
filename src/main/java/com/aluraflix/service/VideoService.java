@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.aluraflix.dto.DadosAtualizacaoDTO;
 import com.aluraflix.dto.DadosVideoDTO;
+import com.aluraflix.exception.ValidacaoException;
 import com.aluraflix.model.Video;
 import com.aluraflix.repositories.CategoriaRepository;
 import com.aluraflix.repositories.VideoRepository;
@@ -22,14 +23,14 @@ public class VideoService {
 	private CategoriaRepository categoriaRepository;
 
 	@Transactional
-	public Video salvarVideo(DadosVideoDTO dados) {
-		if (!categoriaRepository.findById(dados.idCategoria()).isPresent()) {
-			throw new IllegalArgumentException("Categoria não encontrada para o id: " + dados.idCategoria());
-		}
-
+	public void salvarVideo(DadosVideoDTO dados) {
+		if (!categoriaRepository.existsById(dados.idCategoria())) {
+			throw new ValidacaoException("Categoria não encontrada para o id: " + dados.idCategoria());
+		}	
+		
 		var categoria = categoriaRepository.getReferenceById(dados.idCategoria());
 		var video = new Video(dados, categoria);
-		return videoRepository.save(video);
+		videoRepository.save(video);
 	}
 
 	@Transactional(readOnly = true)
