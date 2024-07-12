@@ -1,6 +1,8 @@
 package com.aluraflix.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +35,10 @@ public class VideoController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(dados);
 	}
 
-	@GetMapping
-	public ResponseEntity listar() {
-		return ResponseEntity.ok(videoService.listarVideos());
-	}
+	@GetMapping()
+	public ResponseEntity listar(@PageableDefault(size = 5) Pageable paginacao) {
+		return ResponseEntity.ok(videoService.listarVideos(paginacao));
+	} 
 
 	@GetMapping("/{id}")
 	public ResponseEntity buscarPorId(@PathVariable Long id) {

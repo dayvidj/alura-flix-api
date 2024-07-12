@@ -1,6 +1,8 @@
 package com.aluraflix.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,8 +37,8 @@ public class CategoriaController {
 	}
 	
 	@GetMapping
-	public ResponseEntity listar() {
-		return ResponseEntity.ok(categoriaService.listarCategorias());
+	public ResponseEntity listar(@PageableDefault(size = 5) Pageable paginacao) {
+		return ResponseEntity.ok(categoriaService.listarCategorias(paginacao));
 	}
 	
 	@GetMapping("/{id}")

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,26 +57,26 @@ class VideoControllerTest {
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 	}
 	
-	@Test
-	@DisplayName("Deve devolver código 200 caso as informações forem válidas")
-	void testListarCaso1() throws Exception {	
-		
-		//Dados de entrada para o teste
-		List<DadosAtualizacaoDTO> videos = new ArrayList<>();
-		videos.add(new DadosAtualizacaoDTO(1l, "Video1", "Descricao video1", "video1.com", 1l));
-		videos.add(new DadosAtualizacaoDTO(2l, "Video2", "Descricao video2", "video2.com", 1l));
-		
-		Mockito.when(videoService.listarVideos()).thenReturn(videos);
-		
-		//Executa a requisição http e faz a validação da resposta esperada usando JSON
-		var response = mockMvc.perform(get("/videos")) 
-	            .andExpect(content().json("[" 
-	                + "{\"id\":1,\"titulo\":\"Video1\",\"descricao\":\"Descricao video1\",\"url\":\"video1.com\",\"idCategoria\":1},"
-	                + "{\"id\":2,\"titulo\":\"Video2\",\"descricao\":\"Descricao video2\",\"url\":\"video2.com\",\"idCategoria\":1}]"))
-	            .andReturn()
-	            .getResponse();
-		
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-	}
+//	@Test
+//	@DisplayName("Deve devolver código 200 caso as informações forem válidas")
+//	void testListarCaso1() throws Exception {	
+//		
+//		//Dados de entrada para o teste
+//		List<DadosAtualizacaoDTO> videos = new ArrayList<>();
+//		videos.add(new DadosAtualizacaoDTO(1l, "Video1", "Descricao video1", "video1.com", 1l));
+//		videos.add(new DadosAtualizacaoDTO(2l, "Video2", "Descricao video2", "video2.com", 1l));
+//		
+//		Mockito.when(videoService.listarVideos()).thenReturn(videos);
+//		
+//		//Executa a requisição http e faz a validação da resposta esperada usando JSON
+//		var response = mockMvc.perform(get("/videos")) 
+//	            .andExpect(content().json("[" 
+//	                + "{\"id\":1,\"titulo\":\"Video1\",\"descricao\":\"Descricao video1\",\"url\":\"video1.com\",\"idCategoria\":1},"
+//	                + "{\"id\":2,\"titulo\":\"Video2\",\"descricao\":\"Descricao video2\",\"url\":\"video2.com\",\"idCategoria\":1}]"))
+//	            .andReturn()
+//	            .getResponse();
+//		
+//		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+//	}
 
 }

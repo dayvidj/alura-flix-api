@@ -3,6 +3,8 @@ package com.aluraflix.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,17 +29,17 @@ public class VideoService {
 		if (!categoriaRepository.existsById(dados.idCategoria())) {
 			throw new ValidacaoException("Categoria não encontrada para o id: " + dados.idCategoria());
 		}	
-		
+		 
 		var categoria = categoriaRepository.getReferenceById(dados.idCategoria());
 		var video = new Video(dados, categoria);
 		videoRepository.save(video);
 	}
 
 	@Transactional(readOnly = true)
-	public List<DadosAtualizacaoDTO> listarVideos() {
-		var videos = videoRepository.findAll().stream().map(DadosAtualizacaoDTO::new).toList();
+	public Page<DadosAtualizacaoDTO> listarVideos(Pageable paginacao) {
+		var videos = videoRepository.findAll(paginacao).map(DadosAtualizacaoDTO::new);
 		return videos;
-	}
+	} 
 
 	@Transactional(readOnly = true)
 	public DadosVideoDTO buscarVideoPorId(Long id) {
