@@ -33,13 +33,13 @@ public class VideoController {
 	public ResponseEntity cadastrar(@RequestBody @Valid DadosVideoDTO dados) {		
 		videoService.salvarVideo(dados);	
 		return ResponseEntity.status(HttpStatus.CREATED).body(dados);
-	}
+	} 
 
 	@GetMapping()
 	public ResponseEntity listar(@PageableDefault(size = 5) Pageable paginacao) {
 		return ResponseEntity.ok(videoService.listarVideos(paginacao));
 	} 
-
+ 
 	@GetMapping("/{id}")
 	public ResponseEntity buscarPorId(@PathVariable Long id) {
 		DadosVideoDTO video = videoService.buscarVideoPorId(id);

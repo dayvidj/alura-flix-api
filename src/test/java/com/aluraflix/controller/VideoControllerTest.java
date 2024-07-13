@@ -16,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -57,26 +60,41 @@ class VideoControllerTest {
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 	}
 	
-//	@Test
-//	@DisplayName("Deve devolver código 200 caso as informações forem válidas")
-//	void testListarCaso1() throws Exception {	
-//		
-//		//Dados de entrada para o teste
-//		List<DadosAtualizacaoDTO> videos = new ArrayList<>();
-//		videos.add(new DadosAtualizacaoDTO(1l, "Video1", "Descricao video1", "video1.com", 1l));
-//		videos.add(new DadosAtualizacaoDTO(2l, "Video2", "Descricao video2", "video2.com", 1l));
-//		
-//		Mockito.when(videoService.listarVideos()).thenReturn(videos);
-//		
-//		//Executa a requisição http e faz a validação da resposta esperada usando JSON
-//		var response = mockMvc.perform(get("/videos")) 
-//	            .andExpect(content().json("[" 
-//	                + "{\"id\":1,\"titulo\":\"Video1\",\"descricao\":\"Descricao video1\",\"url\":\"video1.com\",\"idCategoria\":1},"
-//	                + "{\"id\":2,\"titulo\":\"Video2\",\"descricao\":\"Descricao video2\",\"url\":\"video2.com\",\"idCategoria\":1}]"))
-//	            .andReturn()
-//	            .getResponse();
-//		
-//		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-//	}
+	@Test
+	@DisplayName("Deve devolver código 200 caso as informações forem válidas")
+	void testListarCaso1() throws Exception {	
+		
+		//Dados de entrada para o teste
+		List<DadosAtualizacaoDTO> videos = new ArrayList<>();
+		videos.add(new DadosAtualizacaoDTO(1l, "Video1", "Descricao video1", "video1.com", 1l));
+		videos.add(new DadosAtualizacaoDTO(2l, "Video2", "Descricao video2", "video2.com", 1l));
+		
+		Page<DadosAtualizacaoDTO> pageVideos = new PageImpl<>(videos);
+		
+		Mockito.when(videoService.listarVideos(Mockito.any(Pageable.class))).thenReturn(pageVideos);
+		
+		//Executa a requisição http e faz a validação da resposta esperada usando JSON
+		var response = mockMvc.perform(get("/videos")) 
+				 .andExpect(content().json("{"
+			                + "\"totalElements\":2,"
+			                + "\"totalPages\":1,"
+			                + "\"first\":true,"
+			                + "\"last\":true,"
+			                + "\"size\":2,"
+			                + "\"content\":["
+			                + "{\"id\":1,\"titulo\":\"Video1\",\"descricao\":\"Descricao video1\",\"url\":\"video1.com\",\"idCategoria\":1},"
+			                + "{\"id\":2,\"titulo\":\"Video2\",\"descricao\":\"Descricao video2\",\"url\":\"video2.com\",\"idCategoria\":1}"
+			                + "],"
+			                + "\"number\":0,"
+			                + "\"sort\":{\"empty\":true,\"unsorted\":true,\"sorted\":false},"
+			                + "\"numberOfElements\":2,"
+			                + "\"pageable\":\"INSTANCE\","
+			                + "\"empty\":false"
+			                + "}"))
+	            .andReturn() 
+	            .getResponse();
+		
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+	}
 
 }
