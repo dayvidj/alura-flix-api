@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aluraflix.dto.DadosAutenticacaoDTO;
+import com.aluraflix.dto.DadosTokenDTO;
+import com.aluraflix.model.Usuario;
+import com.aluraflix.service.TokenService;
 
 import jakarta.validation.Valid;
 
@@ -20,12 +23,16 @@ public class AutenticacaoController {
 	@Autowired
 	private AuthenticationManager manager;
 	
+	@Autowired 
+	private TokenService tokenService;
+	
 	@PostMapping
 	public ResponseEntity efetuarLogin(@RequestBody @Valid DadosAutenticacaoDTO dados) {
-		var token = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
-		var authentication = manager.authenticate(token);
+		var authenticationToken = new UsernamePasswordAuthenticationToken(dados.login(), dados.senha());
+		var authentication = manager.authenticate(authenticationToken);
+		var tokenJWT = tokenService.gerarToken((Usuario)authentication.getPrincipal());
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok(new DadosTokenDTO(tokenJWT));
 	}
 	
 } 
