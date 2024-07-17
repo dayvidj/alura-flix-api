@@ -49,11 +49,11 @@ public class VideoController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Video não encontrado com o ID: " + id);
 	}
 	
-//	@GetMapping("/")
-//	public ResponseEntity buscarPorTitulo(@RequestParam String search) {
-//		var video = new DadosAtualizacaoDTO(videoService.buscarVideoPorTitulo(search));
-//		return ResponseEntity.ok(video);
-//	}
+	//Endpoint com um número fixo de videos disponível, sem necessidade de autenticação
+	@GetMapping("/free")
+	public ResponseEntity listarVideosFree(@PageableDefault(size = 5) Pageable paginacao) {
+		return ResponseEntity.ok(videoService.listarVideosLivre(paginacao));
+	}
 	
 	@GetMapping("/search")
 	public ResponseEntity buscarPorTituloCategoria(@RequestParam String nome) {

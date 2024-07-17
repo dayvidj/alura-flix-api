@@ -46,10 +46,11 @@ public class VideoService {
 		return videoRepository.findById(id).map(DadosVideoDTO::new).orElse(null);
 	}
 
-//	@Transactional(readOnly = true)
-//	public Video buscarVideoPorTitulo(String titulo) {
-//		return videoRepository.findByTitulo(titulo);
-//	}
+	@Transactional(readOnly = true)
+	public Page<DadosAtualizacaoDTO> listarVideosLivre(Pageable paginacao) {
+		var videos = videoRepository.findByCategoriaLivre(paginacao).map(DadosAtualizacaoDTO::new);
+		return videos;
+	}
 
 	@Transactional(readOnly = true)
 	public List<Video> buscarVideosPorTituloCategoria(String titulo) {
@@ -71,5 +72,6 @@ public class VideoService {
 		}
 		return false;
 	}
+
 
 }
