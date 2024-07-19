@@ -20,10 +20,12 @@ import com.aluraflix.dto.DadosCadastroCategoriaDTO;
 import com.aluraflix.dto.DadosCategoriaDTO;
 import com.aluraflix.service.CategoriaService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("categorias")
+@SecurityRequirement(name = "bearer-key")
 public class CategoriaController {
 
 	@Autowired

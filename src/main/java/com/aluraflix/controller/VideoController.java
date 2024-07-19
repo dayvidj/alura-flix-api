@@ -20,10 +20,12 @@ import com.aluraflix.dto.DadosAtualizacaoDTO;
 import com.aluraflix.dto.DadosVideoDTO;
 import com.aluraflix.service.VideoService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("videos")
+@SecurityRequirement(name = "bearer-key")
 public class VideoController {
 
 	@Autowired

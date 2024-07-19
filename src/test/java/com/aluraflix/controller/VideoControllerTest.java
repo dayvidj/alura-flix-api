@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.aluraflix.dto.DadosAtualizacaoDTO;
@@ -28,6 +29,7 @@ import com.aluraflix.service.VideoService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser
 class VideoControllerTest {
 
 	@Autowired
@@ -35,7 +37,7 @@ class VideoControllerTest {
 	
 	@MockBean
 	private VideoService videoService;
-	
+	 
 	@Test
 	@DisplayName("Deve devolver código http 400 caso as informações forem inválidas")
 	void testCadastrarCaso1() throws Exception {
@@ -63,7 +65,7 @@ class VideoControllerTest {
 	@Test
 	@DisplayName("Deve devolver código 200 caso as informações forem válidas")
 	void testListarCaso1() throws Exception {	
-		
+		 
 		//Dados de entrada para o teste
 		List<DadosAtualizacaoDTO> videos = new ArrayList<>();
 		videos.add(new DadosAtualizacaoDTO(1l, "Video1", "Descricao video1", "video1.com", 1l));
