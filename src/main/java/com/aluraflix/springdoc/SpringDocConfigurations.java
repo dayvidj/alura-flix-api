@@ -22,7 +22,7 @@ public class SpringDocConfigurations {
 	                                    .scheme("bearer")
 	                                    .bearerFormat("JWT")))
 	                    .info(new Info()
-	                            .title("Alura-FLix API")
+	                            .title("Alura-Flix API")
 	                            .description("API Rest da aplicação Alura-Flix, contendo as funcionalidades de CRUD de videos e de categorias. além de serviço de autenticação para acesso às rotas.")
 	                            .contact(new Contact()
 	                                    .name("Dayvid Jonathan")
